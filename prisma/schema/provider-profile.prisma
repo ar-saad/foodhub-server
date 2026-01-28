@@ -1,5 +1,5 @@
 model ProviderProfile {
-  id          String  @id
+  id          String  @id @default(uuid())
   userId      String  @unique
   name        String
   address     String

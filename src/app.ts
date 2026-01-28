@@ -5,6 +5,8 @@ import { toNodeHandler } from "better-auth/node";
 import { requestLogger } from "./middlewares/requestLogger";
 import { notFound } from "./middlewares/notFound";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+import { ProviderProfileRouter } from "./modules/provider-profile/provider-profile.router";
+import { UserRouter } from "./modules/user/user.router";
 
 const app: Application = express();
 
@@ -23,6 +25,8 @@ app.use(requestLogger);
 
 // Routes
 app.all("/api/auth/*splat", toNodeHandler(auth)); // Auth route
+app.use("/api/v1/users", UserRouter);
+app.use("/api/v1/provider-profiles", ProviderProfileRouter);
 
 // ROOT DIRECTORY
 app.get("/", (req: Request, res: Response) => {
