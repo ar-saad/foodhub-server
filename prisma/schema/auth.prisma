@@ -1,16 +1,17 @@
 model User {
-  id        String     @id
+  id        String   @id
   name      String
   email     String
-  role      USER_ROLES @default(CUSTOMER)
-  phone     String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   emailVerified Boolean   @default(false)
   image         String?
   sessions      Session[]
   accounts      Account[]
+
+  role  USER_ROLES @default(CUSTOMER)
+  phone String?
 
   @@unique([email])
   @@map("user")

@@ -2,4 +2,6 @@ model Meal {
   id    String @id
   name  String
   price Int
+
+  @@map("meal")
 }
