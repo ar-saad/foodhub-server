@@ -13,6 +13,10 @@ model User {
   role  USER_ROLES @default(CUSTOMER)
   phone String?
 
+  orders          Order[]
+  reviews         Review[]
+  providerProfile ProviderProfile?
+
   @@unique([email])
   @@map("user")
 }

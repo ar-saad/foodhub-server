@@ -1,7 +1,21 @@
 model Meal {
-  id    String @id
-  name  String
-  price Int
+  id         String @id @default(uuid())
+  providerId String
+  categoryId String
+
+  name        String  @db.VarChar(255)
+  description String? @db.Text
+  price       Decimal @db.Decimal(10, 2)
+  imageUrl    String?
+  isAvailable Boolean @default(true)
+
+  providerProfile ProviderProfile @relation(fields: [providerId], references: [id])
+  category        Category        @relation(fields: [categoryId], references: [id])
+  orderItems      OrderItem[]
+  reviews         Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("meal")
 }
