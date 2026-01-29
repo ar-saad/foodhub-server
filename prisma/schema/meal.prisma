@@ -6,7 +6,7 @@ model Meal {
   name        String  @db.VarChar(255)
   description String? @db.Text
   price       Decimal @db.Decimal(10, 2)
-  imageUrl    String?
+  image       String?
   isAvailable Boolean @default(true)
 
   providerProfile ProviderProfile @relation(fields: [providerId], references: [id])

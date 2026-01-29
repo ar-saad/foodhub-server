@@ -8,13 +8,21 @@ type UpdateUserPayload = {
   phone?: string;
 };
 
-// PATCH | "/api/v1/users/me" | Get currently logged in user data
+// GET | "/api/v1/users/me" | Get currently logged in user data
 const getCurrentlyLoggedInUser = async (userId: string) => {
   return await prisma.user.findUnique({
     where: {
       id: userId,
     },
+    include: {
+      providerProfile: true,
+    },
   });
+};
+
+// GET | "/api/v1/users" | Get all users
+const getUsers = async () => {
+  return await prisma.user.findMany();
 };
 
 // PATCH | "/api/v1/users/:userId" | Update user
@@ -38,6 +46,7 @@ const updateUser = async (
 };
 
 export const UserService = {
+  getUsers,
   getCurrentlyLoggedInUser,
   updateUser,
 };

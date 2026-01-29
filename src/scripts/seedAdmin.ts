@@ -1,3 +1,4 @@
+import { USER_ROLES } from "../../prisma/generated/prisma/enums";
 import { prisma } from "../lib/prisma";
 
 const seedAdmin = async () => {
@@ -5,7 +6,7 @@ const seedAdmin = async () => {
     const adminData = {
       name: process.env.ADMIN_NAME,
       email: process.env.ADMIN_EMAIL,
-      role: process.env.ADMIN_ROLE,
+      role: USER_ROLES.ADMIN,
       password: process.env.ADMIN_PASS,
     };
 
@@ -26,9 +27,10 @@ const seedAdmin = async () => {
         method: "POST",
         headers: {
           "content-type": "application/json",
+          origin: process.env.APP_URL!,
         },
         body: JSON.stringify(adminData),
-      }
+      },
     );
 
     if (signupAdmin.ok) {

@@ -7,6 +7,8 @@ import { notFound } from "./middlewares/notFound";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { ProviderProfileRouter } from "./modules/provider-profile/provider-profile.router";
 import { UserRouter } from "./modules/user/user.router";
+import { MealRouter } from "./modules/meal/meal.router";
+import { CategoryRouter } from "./modules/category/category.router";
 
 const app: Application = express();
 
@@ -27,6 +29,8 @@ app.use(requestLogger);
 app.all("/api/auth/*splat", toNodeHandler(auth)); // Auth route
 app.use("/api/v1/users", UserRouter);
 app.use("/api/v1/provider-profiles", ProviderProfileRouter);
+app.use("/api/v1/categories", CategoryRouter);
+app.use("/api/v1/meals", MealRouter);
 
 // ROOT DIRECTORY
 app.get("/", (req: Request, res: Response) => {

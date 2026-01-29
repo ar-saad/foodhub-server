@@ -9,14 +9,22 @@ import {
   NotFoundError,
 } from "../../utils/AppError";
 
-// POST | "/" | Create Provider Profile to become a provider
-const createProviderProfile = async (data: ProviderProfile) => {
+type ProviderProfileCreatePayload = {
+  userId: string;
+  name: string;
+  address: string;
+  description?: string;
+  logo?: string;
+};
+
+// POST | "/api/v1/provider-profiles/" | Create Provider Profile to become a provider
+const createProviderProfile = async (data: ProviderProfileCreatePayload) => {
   return await prisma.$transaction(async (tx) => {
-    const result = await prisma.providerProfile.create({
+    const result = await tx.providerProfile.create({
       data,
     });
 
-    await prisma.user.update({
+    await tx.user.update({
       where: {
         id: data.userId,
       },
@@ -29,7 +37,24 @@ const createProviderProfile = async (data: ProviderProfile) => {
   });
 };
 
-// PATCH | "/:providerId" | Update provider profile
+// GET "/api/v1/provider-profiles/:providerId" | Get provider profile by ID
+const getProviderProfile = async (providerId: string) => {
+  return await prisma.providerProfile.findUnique({
+    where: {
+      id: providerId,
+    },
+    include: {
+      meals: true,
+    },
+  });
+};
+
+// GET "/api/v1/provider-profiles" | Get all provider profiles
+const getProviderProfiles = async () => {
+  return await prisma.providerProfile.findMany();
+};
+
+// PATCH | "/api/v1/provider-profiles/:providerId" | Update provider profile
 const updateProviderProfile = async (
   providerId: string,
   data: Partial<ProviderProfile>,
@@ -67,5 +92,7 @@ const updateProviderProfile = async (
 
 export const ProviderProfileService = {
   createProviderProfile,
+  getProviderProfile,
+  getProviderProfiles,
   updateProviderProfile,
 };

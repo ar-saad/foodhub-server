@@ -6,7 +6,7 @@ import { BadRequestError } from "../../utils/AppError";
 import { USER_ROLES } from "../../../prisma/generated/prisma/enums";
 import { omitUndefined } from "../../utils/object";
 
-// PATCH | "/api/v1/users/me" | Get currently logged in user data
+// GET | "/api/v1/users/me" | Get currently logged in user data
 const getCurrentlyLoggedInUser = asyncHandler(
   async (req: Request, res: Response) => {
     const userId = req.user?.id;
@@ -28,6 +28,21 @@ const getCurrentlyLoggedInUser = asyncHandler(
     );
   },
 );
+
+// GET | "/api/v1/users" | Get all users
+const getUsers = asyncHandler(async (req: Request, res: Response) => {
+  const result = await UserService.getUsers();
+
+  sendResponse(
+    {
+      statusCode: 200,
+      success: true,
+      message: "Retrieved all users data",
+      data: result,
+    },
+    res,
+  );
+});
 
 // PATCH | "/api/v1/users/:userId" | Update user
 const updateUser = asyncHandler(async (req: Request, res: Response) => {
@@ -68,6 +83,7 @@ const updateUser = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const UserController = {
+  getUsers,
   getCurrentlyLoggedInUser,
   updateUser,
 };

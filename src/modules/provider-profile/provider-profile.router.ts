@@ -12,6 +12,13 @@ router.post(
   authorize(USER_ROLES.CUSTOMER),
   ProviderProfileController.createProviderProfile,
 );
+
+// GET "/api/v1/provider-profiles" | Get all provider profiles
+router.get("/", ProviderProfileController.getProviderProfiles);
+
+// GET "/api/v1/provider-profiles/:providerId" | Get provider profile by ID
+router.get("/:providerId", ProviderProfileController.getProviderProfile);
+
 // PATCH | "/:providerId" | Update provider profile
 router.patch(
   "/:providerId",
