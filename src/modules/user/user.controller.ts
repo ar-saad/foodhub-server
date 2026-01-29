@@ -3,7 +3,10 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { UserService } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { BadRequestError } from "../../utils/AppError";
+import { USER_ROLES } from "../../../prisma/generated/prisma/enums";
+import { omitUndefined } from "../../utils/object";
 
+// PATCH | "/api/v1/users/me" | Get currently logged in user data
 const getCurrentlyLoggedInUser = asyncHandler(
   async (req: Request, res: Response) => {
     const userId = req.user?.id;
@@ -26,6 +29,45 @@ const getCurrentlyLoggedInUser = asyncHandler(
   },
 );
 
+// PATCH | "/api/v1/users/:userId" | Update user
+const updateUser = asyncHandler(async (req: Request, res: Response) => {
+  const { userId: userIdParam } = req.params;
+  const user = req.user;
+  const data = req.body;
+
+  const payload = omitUndefined({
+    name: data.name,
+    image: data.image,
+    phone: data.phone,
+  });
+
+  if (!user) {
+    throw new BadRequestError("Invalid request");
+  }
+
+  if (!userIdParam || typeof userIdParam !== "string") {
+    throw new BadRequestError("Invalid request");
+  }
+
+  const result = await UserService.updateUser(
+    user.id,
+    user.role as USER_ROLES,
+    userIdParam,
+    payload,
+  );
+
+  sendResponse(
+    {
+      statusCode: 200,
+      success: true,
+      message: "User updated successfully",
+      data: result,
+    },
+    res,
+  );
+});
+
 export const UserController = {
   getCurrentlyLoggedInUser,
+  updateUser,
 };

@@ -1,10 +1,7 @@
 model User {
-  id        String   @id
-  name      String
-  email     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id            String    @id
+  name          String
+  email         String
   emailVerified Boolean   @default(false)
   image         String?
   sessions      Session[]
@@ -16,6 +13,9 @@ model User {
   orders          Order[]
   reviews         Review[]
   providerProfile ProviderProfile?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([email])
   @@map("user")
