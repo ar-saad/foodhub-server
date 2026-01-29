@@ -8,25 +8,26 @@ import {
   ForbiddenError,
   NotFoundError,
 } from "../../utils/AppError";
-
-type ProviderProfileCreatePayload = {
-  userId: string;
-  name: string;
-  address: string;
-  description?: string;
-  logo?: string;
-};
+import { omitUndefined } from "../../utils/object";
+import {
+  ProviderProfileCreatePayload,
+  ProviderProfileUpdatePayload,
+} from "./provider-profile.types";
 
 // POST | "/api/v1/provider-profiles/" | Create Provider Profile to become a provider
-const createProviderProfile = async (data: ProviderProfileCreatePayload) => {
+const createProviderProfile = async (payload: ProviderProfileCreatePayload) => {
   return await prisma.$transaction(async (tx) => {
     const result = await tx.providerProfile.create({
-      data,
+      data: {
+        ...payload,
+        description: payload.description ?? null,
+        logo: payload.logo ?? null,
+      },
     });
 
     await tx.user.update({
       where: {
-        id: data.userId,
+        id: payload.userId,
       },
       data: {
         role: UserRoles.PROVIDER,
@@ -57,7 +58,7 @@ const getProviderProfiles = async () => {
 // PATCH | "/api/v1/provider-profiles/:providerId" | Update provider profile
 const updateProviderProfile = async (
   providerId: string,
-  data: Partial<ProviderProfile>,
+  payload: ProviderProfileUpdatePayload,
 ) => {
   // Check if Profile ID exists
   if (!providerId) {
@@ -76,11 +77,13 @@ const updateProviderProfile = async (
   }
 
   // Check if the user trying to update the profile is the owner of the profile or not
-  if (profileToUpdate.userId !== data.userId) {
+  if (profileToUpdate.userId !== payload.userId) {
     throw new ForbiddenError(
       "You do not have permission to update this provider profile",
     );
   }
+
+  const data = omitUndefined(payload);
 
   return await prisma.providerProfile.update({
     where: {

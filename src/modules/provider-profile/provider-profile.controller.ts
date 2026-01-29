@@ -4,6 +4,7 @@ import { ProviderProfileService } from "./provider-profile.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { BadRequestError } from "../../utils/AppError";
 import { omitUndefined } from "../../utils/object";
+import { updateProviderProfileSchema } from "./provider-profile.schema";
 
 // POST | "/" | Create Provider Profile to become a provider
 const createProviderProfile = asyncHandler(
@@ -77,6 +78,8 @@ const getProviderProfiles = asyncHandler(
 const updateProviderProfile = asyncHandler(
   async (req: Request, res: Response) => {
     const { providerId } = req.params;
+    const data = req.body;
+    const user = req.user;
 
     if (!providerId || typeof providerId !== "string") {
       throw new BadRequestError(
@@ -84,13 +87,13 @@ const updateProviderProfile = asyncHandler(
       );
     }
 
-    const user = req.user;
-    const data = req.body;
     data.userId = user?.id;
+
+    const payload = updateProviderProfileSchema.parse(data);
 
     const result = await ProviderProfileService.updateProviderProfile(
       providerId,
-      data,
+      payload,
     );
 
     sendResponse(

@@ -1,12 +1,8 @@
 import { UserRoles } from "../../../prisma/generated/prisma/browser";
 import { prisma } from "../../lib/prisma";
 import { ForbiddenError } from "../../utils/AppError";
-
-type UpdateUserPayload = {
-  name?: string;
-  image?: string;
-  phone?: string;
-};
+import { omitUndefined } from "../../utils/object";
+import { UpdateUserPayload } from "./user.types";
 
 // GET | "/api/v1/users/me" | Get currently logged in user data
 const getCurrentlyLoggedInUser = async (userId: string) => {
@@ -37,11 +33,13 @@ const updateUser = async (
     throw new ForbiddenError("You do not have permission to update this user");
   }
 
+  const data = omitUndefined(payload);
+
   return await prisma.user.update({
     where: {
       id: userIdParam,
     },
-    data: payload,
+    data,
   });
 };
 

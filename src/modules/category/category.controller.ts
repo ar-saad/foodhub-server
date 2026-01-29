@@ -21,7 +21,7 @@ const getCategories = asyncHandler(async (req: Request, res: Response) => {
 // POST | "/api/v1/categories" | Create new category
 const createCategory = asyncHandler(async (req: Request, res: Response) => {
   const { name } = req.body;
-  const result = await CategoryService.createCategory({ name });
+  const result = await CategoryService.createCategory(name);
 
   sendResponse(
     {

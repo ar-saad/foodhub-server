@@ -1,18 +1,14 @@
 import { prisma } from "../../lib/prisma";
 
-type CategoryCreatePayload = {
-  name: string;
-};
-
 // GET | "/api/v1/categories" | Get all categories
 const getCategories = async () => {
   return await prisma.category.findMany();
 };
 
 // POST | "/api/v1/categories" | Create new category
-const createCategory = async (payload: CategoryCreatePayload) => {
+const createCategory = async (name: string) => {
   return await prisma.category.create({
-    data: payload,
+    data: { name },
   });
 };
 

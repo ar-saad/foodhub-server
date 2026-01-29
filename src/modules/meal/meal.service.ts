@@ -1,13 +1,5 @@
 import { prisma } from "../../lib/prisma";
-
-type MealCreatePayload = {
-  providerId: string;
-  categoryId: string;
-  name: string;
-  description?: string;
-  price: number;
-  image: string;
-};
+import { CreateMealPayload } from "./meal.types";
 
 // GET | "/api/v1/meals" | Get all meals
 const getMeals = async () => {
@@ -24,9 +16,13 @@ const getMeal = async (mealId: string) => {
 };
 
 // POST | "/api/v1/meals" | Create meal
-const createMeal = async (payload: MealCreatePayload) => {
+const createMeal = async (payload: CreateMealPayload) => {
   return await prisma.meal.create({
-    data: payload,
+    data: {
+      ...payload,
+      description: payload.description ?? null,
+      image: payload.image ?? null,
+    },
   });
 };
 

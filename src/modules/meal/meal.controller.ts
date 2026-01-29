@@ -3,6 +3,7 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { MealService } from "./meal.service";
 import { omitUndefined } from "../../utils/object";
 import { sendResponse } from "../../utils/sendResponse";
+import { createMealSchema } from "./meal.schema";
 
 // GET | "/api/v1/meals" | Get all meals
 const getMeals = asyncHandler(async (req: Request, res: Response) => {
@@ -40,16 +41,7 @@ const getMeal = asyncHandler(async (req: Request, res: Response) => {
 const createMeal = asyncHandler(async (req: Request, res: Response) => {
   const data = req.body;
 
-  const payload = omitUndefined({
-    providerId: data.providerId,
-    categoryId: data.categoryId,
-    name: data.name,
-    description: data.description,
-    price: data.price,
-    image: data.image,
-  });
-
-  console.log(payload);
+  const payload = createMealSchema.parse(data);
 
   const result = await MealService.createMeal(payload);
 
