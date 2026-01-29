@@ -1,4 +1,4 @@
-import { User, USER_ROLES } from "../../../prisma/generated/prisma/browser";
+import { UserRoles } from "../../../prisma/generated/prisma/browser";
 import { prisma } from "../../lib/prisma";
 import { ForbiddenError } from "../../utils/AppError";
 
@@ -28,12 +28,12 @@ const getUsers = async () => {
 // PATCH | "/api/v1/users/:userId" | Update user
 const updateUser = async (
   userId: string,
-  role: USER_ROLES,
+  role: UserRoles,
   userIdParam: string,
   payload: UpdateUserPayload,
 ) => {
   // Admin can update anyone's information. User can only update their own information.
-  if (role !== USER_ROLES.ADMIN && userId !== userIdParam) {
+  if (role !== UserRoles.ADMIN && userId !== userIdParam) {
     throw new ForbiddenError("You do not have permission to update this user");
   }
 

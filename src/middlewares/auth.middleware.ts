@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { auth } from "../lib/auth";
-import { USER_ROLES } from "../../prisma/generated/prisma/enums";
+import { UserRoles } from "../../prisma/generated/prisma/enums";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ForbiddenError, UnauthorizedError } from "../utils/AppError";
 
@@ -26,20 +26,20 @@ export const authenticate = asyncHandler(
       name: session.user.name,
       email: session.user.email,
       emailVerified: session.user.emailVerified,
-      role: session.user.role ?? USER_ROLES.CUSTOMER,
+      role: session.user.role ?? UserRoles.CUSTOMER,
     };
 
     next();
   },
 );
 
-export const authorize = (...roles: USER_ROLES[]) => {
+export const authorize = (...roles: UserRoles[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       throw new UnauthorizedError("You are not authorized");
     }
 
-    if (roles.length && !roles.includes(req.user.role as USER_ROLES)) {
+    if (roles.length && !roles.includes(req.user.role as UserRoles)) {
       throw new ForbiddenError(
         "You don't have permission to access this resource",
       );

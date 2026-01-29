@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../../middlewares/auth.middleware";
-import { USER_ROLES } from "../../../prisma/generated/prisma/enums";
+import { UserRoles } from "../../../prisma/generated/prisma/enums";
 import { MealController } from "./meal.controller";
 
 const router: Router = Router();
@@ -15,7 +15,7 @@ router.get("/:mealId", MealController.getMeal);
 router.post(
   "/",
   authenticate,
-  authorize(USER_ROLES.PROVIDER),
+  authorize(UserRoles.PROVIDER),
   MealController.createMeal,
 );
 

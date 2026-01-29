@@ -1,6 +1,6 @@
 import {
   ProviderProfile,
-  USER_ROLES,
+  UserRoles,
 } from "../../../prisma/generated/prisma/browser";
 import { prisma } from "../../lib/prisma";
 import {
@@ -29,7 +29,7 @@ const createProviderProfile = async (data: ProviderProfileCreatePayload) => {
         id: data.userId,
       },
       data: {
-        role: USER_ROLES.PROVIDER,
+        role: UserRoles.PROVIDER,
       },
     });
 

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../../middlewares/auth.middleware";
-import { USER_ROLES } from "../../../prisma/generated/prisma/enums";
+import { UserRoles } from "../../../prisma/generated/prisma/enums";
 import { ProviderProfileController } from "./provider-profile.controller";
 
 const router: Router = Router();
@@ -9,7 +9,7 @@ const router: Router = Router();
 router.post(
   "/",
   authenticate,
-  authorize(USER_ROLES.CUSTOMER),
+  authorize(UserRoles.CUSTOMER),
   ProviderProfileController.createProviderProfile,
 );
 
@@ -23,7 +23,7 @@ router.get("/:providerId", ProviderProfileController.getProviderProfile);
 router.patch(
   "/:providerId",
   authenticate,
-  authorize(USER_ROLES.PROVIDER),
+  authorize(UserRoles.PROVIDER),
   ProviderProfileController.updateProviderProfile,
 );
 

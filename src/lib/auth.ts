@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import nodemailer from "nodemailer";
-import { USER_ROLES } from "../../prisma/generated/prisma/enums";
+import { UserRoles } from "../../prisma/generated/prisma/enums";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -23,7 +23,7 @@ export const auth = betterAuth({
     additionalFields: {
       role: {
         type: "string",
-        defaultValue: USER_ROLES.CUSTOMER,
+        defaultValue: UserRoles.CUSTOMER,
         required: false,
       },
       phone: {

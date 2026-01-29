@@ -7,7 +7,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role  USER_ROLES @default(CUSTOMER)
+  role  UserRoles @default(CUSTOMER)
   phone String?
 
   orders          Order[]
@@ -21,7 +21,7 @@ model User {
   @@map("user")
 }
 
-enum USER_ROLES {
+enum UserRoles {
   CUSTOMER
   PROVIDER
   ADMIN

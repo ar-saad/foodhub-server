@@ -1,4 +1,4 @@
-import { USER_ROLES } from "../../prisma/generated/prisma/enums";
+import { UserRoles } from "../../prisma/generated/prisma/enums";
 import { prisma } from "../lib/prisma";
 
 const seedAdmin = async () => {
@@ -6,7 +6,7 @@ const seedAdmin = async () => {
     const adminData = {
       name: process.env.ADMIN_NAME,
       email: process.env.ADMIN_EMAIL,
-      role: USER_ROLES.ADMIN,
+      role: UserRoles.ADMIN,
       password: process.env.ADMIN_PASS,
     };
 

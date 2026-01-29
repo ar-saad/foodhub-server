@@ -3,7 +3,7 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { UserService } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { BadRequestError } from "../../utils/AppError";
-import { USER_ROLES } from "../../../prisma/generated/prisma/enums";
+import { UserRoles } from "../../../prisma/generated/prisma/enums";
 import { omitUndefined } from "../../utils/object";
 
 // GET | "/api/v1/users/me" | Get currently logged in user data
@@ -66,7 +66,7 @@ const updateUser = asyncHandler(async (req: Request, res: Response) => {
 
   const result = await UserService.updateUser(
     user.id,
-    user.role as USER_ROLES,
+    user.role as UserRoles,
     userIdParam,
     payload,
   );

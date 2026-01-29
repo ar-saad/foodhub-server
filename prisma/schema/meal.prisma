@@ -11,7 +11,6 @@ model Meal {
 
   providerProfile ProviderProfile @relation(fields: [providerId], references: [id])
   category        Category        @relation(fields: [categoryId], references: [id])
-  orderItems      OrderItem[]
   reviews         Review[]
 
   createdAt DateTime @default(now())

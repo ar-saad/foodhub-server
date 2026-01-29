@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../../middlewares/auth.middleware";
-import { USER_ROLES } from "../../../prisma/generated/prisma/enums";
+import { UserRoles } from "../../../prisma/generated/prisma/enums";
 import { CategoryController } from "./category.controller";
 
 const router: Router = Router();
@@ -12,7 +12,7 @@ router.get("/", CategoryController.getCategories);
 router.post(
   "/",
   authenticate,
-  authorize(USER_ROLES.ADMIN),
+  authorize(UserRoles.ADMIN),
   CategoryController.createCategory,
 );
 

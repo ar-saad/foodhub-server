@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../../middlewares/auth.middleware";
 import { UserController } from "./user.controller";
-import { USER_ROLES } from "../../../prisma/generated/prisma/enums";
+import { UserRoles } from "../../../prisma/generated/prisma/enums";
 
 const router: Router = Router();
 
@@ -9,7 +9,7 @@ const router: Router = Router();
 router.get(
   "/",
   authenticate,
-  authorize(USER_ROLES.ADMIN),
+  authorize(UserRoles.ADMIN),
   UserController.getUsers,
 );
 
