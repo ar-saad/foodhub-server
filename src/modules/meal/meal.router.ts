@@ -19,4 +19,15 @@ router.post(
   MealController.createMeal,
 );
 
+// PATCH | "/api/v1/meals/mealId" | Update meal
+router.patch(
+  "/:mealId",
+  authenticate,
+  authorize(UserRoles.PROVIDER),
+  MealController.updateMeal,
+);
+
+// DELETE | "/api/v1/meals/:mealId" | Delete meal
+router.get("/:mealId", MealController.deleteMeal);
+
 export const MealRouter = router;

@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma";
-import { CreateMealPayload } from "./meal.types";
+import { omitUndefined } from "../../utils/object";
+import { CreateMealPayload, UpdateMealPayload } from "./meal.types";
 
 // GET | "/api/v1/meals" | Get all meals
 const getMeals = async () => {
@@ -26,8 +27,31 @@ const createMeal = async (payload: CreateMealPayload) => {
   });
 };
 
+// PATCH | "/api/v1/meals/mealId" | Update meal
+const updateMeal = async (mealId: string, payload: UpdateMealPayload) => {
+  const data = omitUndefined(payload);
+
+  return await prisma.meal.update({
+    where: {
+      id: mealId,
+    },
+    data,
+  });
+};
+
+// DELETE | "/api/v1/meals/:mealId" | Delete meal
+const deleteMeal = async (mealId: string) => {
+  return await prisma.meal.delete({
+    where: {
+      id: mealId,
+    },
+  });
+};
+
 export const MealService = {
   getMeals,
   getMeal,
   createMeal,
+  updateMeal,
+  deleteMeal,
 };

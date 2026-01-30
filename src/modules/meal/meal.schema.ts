@@ -8,3 +8,10 @@ export const createMealSchema = z.object({
   price: z.number().positive(),
   image: z.url().optional(),
 });
+
+export const updateMealSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  price: z.number().positive().optional(),
+  image: z.url().optional(),
+});
