@@ -7,6 +7,9 @@ import { sendResponse } from "../../utils/sendResponse";
 // POST | "/api/v1/orders" | Create order
 const createOrder = asyncHandler(async (req: Request, res: Response) => {
   const data = req.body;
+  const user = req.user;
+
+  data.customerId = user?.id;
 
   const payload = createOrderSchema.parse(data);
 

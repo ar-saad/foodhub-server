@@ -10,7 +10,7 @@ export const createOrderItemSchema = z.object({
 });
 
 export const createOrderSchema = z.object({
-  customerId: z.uuid(),
+  customerId: z.string().min(1),
   providerId: z.uuid(),
   items: z.array(createOrderItemSchema).min(1),
   totalAmount: z.number().positive(),

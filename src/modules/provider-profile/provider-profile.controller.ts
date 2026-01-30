@@ -3,23 +3,20 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { ProviderProfileService } from "./provider-profile.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { BadRequestError } from "../../utils/AppError";
-import { omitUndefined } from "../../utils/object";
-import { updateProviderProfileSchema } from "./provider-profile.schema";
+import {
+  createProviderProfileSchema,
+  updateProviderProfileSchema,
+} from "./provider-profile.schema";
 
 // POST | "/" | Create Provider Profile to become a provider
 const createProviderProfile = asyncHandler(
   async (req: Request, res: Response) => {
+    const data = req.body;
     const user = req.user;
 
-    const data = req.body;
+    data.userId = user?.id;
 
-    const payload = omitUndefined({
-      userId: user?.id,
-      name: data.name,
-      address: data.address,
-      description: data.description,
-      logo: data.logo,
-    });
+    const payload = createProviderProfileSchema.parse(data);
 
     const result = await ProviderProfileService.createProviderProfile(payload);
 

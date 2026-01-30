@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const createProviderProfileSchema = z.object({
-  userId: z.uuid(),
+  userId: z.string().min(1),
   name: z.string(),
   address: z.string(),
   description: z.string().optional(),
@@ -9,7 +9,7 @@ export const createProviderProfileSchema = z.object({
 });
 
 export const updateProviderProfileSchema = z.object({
-  userId: z.uuid(),
+  userId: z.string().min(1),
   name: z.string().optional(),
   address: z.string().optional(),
   description: z.string().optional(),

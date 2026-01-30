@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authenticate, authorize } from "../../middlewares/auth.middleware";
 import { UserRoles } from "../../../prisma/generated/prisma/enums";
-import { OrderService } from "./order.service";
+import { OrderController } from "./order.controller";
 
 const router: Router = Router();
 
@@ -10,5 +10,7 @@ router.post(
   "/",
   authenticate,
   authorize(UserRoles.CUSTOMER),
-  OrderService.createOrder,
+  OrderController.createOrder,
 );
+
+export const OrderRouter = router;
