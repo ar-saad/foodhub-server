@@ -3,7 +3,7 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { UserService } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { BadRequestError } from "../../utils/AppError";
-import { UserRoles } from "../../../prisma/generated/prisma/enums";
+import { UserRoles, UserStatus } from "../../../prisma/generated/prisma/enums";
 import { omitUndefined } from "../../utils/object";
 
 // GET | "/api/v1/users/me" | Get currently logged in user data
@@ -82,8 +82,30 @@ const updateUser = asyncHandler(async (req: Request, res: Response) => {
   );
 });
 
+// PATCH | "/api/v1/users/status/:userId" | Update user status
+const updateUserStatus = asyncHandler(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const { status } = req.body;
+
+  const result = await UserService.updateUserStatus(
+    userId as string,
+    status as UserStatus,
+  );
+
+  sendResponse(
+    {
+      statusCode: 200,
+      success: true,
+      message: "User status updated successfully",
+      data: result,
+    },
+    res,
+  );
+});
+
 export const UserController = {
   getUsers,
   getCurrentlyLoggedInUser,
   updateUser,
+  updateUserStatus,
 };

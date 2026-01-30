@@ -1,4 +1,7 @@
-import { UserRoles } from "../../../prisma/generated/prisma/browser";
+import {
+  UserRoles,
+  UserStatus,
+} from "../../../prisma/generated/prisma/browser";
 import { prisma } from "../../lib/prisma";
 import { ForbiddenError } from "../../utils/AppError";
 import { omitUndefined } from "../../utils/object";
@@ -43,8 +46,21 @@ const updateUser = async (
   });
 };
 
+// PATCH | "/api/v1/users/status/:userId" | Update user status
+const updateUserStatus = async (userId: string, status: UserStatus) => {
+  return await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      status,
+    },
+  });
+};
+
 export const UserService = {
   getUsers,
   getCurrentlyLoggedInUser,
   updateUser,
+  updateUserStatus,
 };

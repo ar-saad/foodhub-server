@@ -19,4 +19,12 @@ router.get("/me", authenticate, UserController.getCurrentlyLoggedInUser);
 // PATCH | "/api/v1/users/:userId" | Update user
 router.patch("/:userId", authenticate, UserController.updateUser);
 
+// PATCH | "/api/v1/users/status/:userId" | Update user status
+router.patch(
+  "/status/:userId",
+  authenticate,
+  authorize(UserRoles.ADMIN),
+  UserController.updateUserStatus,
+);
+
 export const UserRouter = router;
