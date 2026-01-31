@@ -8,6 +8,7 @@ model Meal {
   price       Decimal @db.Decimal(10, 2)
   image       String?
   isAvailable Boolean @default(true)
+  isFeatured  Boolean @default(false)
 
   providerProfile ProviderProfile @relation(fields: [providerId], references: [id])
   category        Category        @relation(fields: [categoryId], references: [id])
