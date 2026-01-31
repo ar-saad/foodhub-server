@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { CategoryService } from "./category.service";
 import { sendResponse } from "../../utils/sendResponse";
+import { createCategorySchema } from "./category.schema";
 
 // GET | "/api/v1/categories" | Get all categories
 const getCategories = asyncHandler(async (req: Request, res: Response) => {
@@ -20,8 +21,11 @@ const getCategories = asyncHandler(async (req: Request, res: Response) => {
 
 // POST | "/api/v1/categories" | Create new category
 const createCategory = asyncHandler(async (req: Request, res: Response) => {
-  const { name } = req.body;
-  const result = await CategoryService.createCategory(name);
+  const { name, emoji, image } = req.body;
+
+  const payload = createCategorySchema.parse({ name, emoji, image });
+
+  const result = await CategoryService.createCategory(payload);
 
   sendResponse(
     {
