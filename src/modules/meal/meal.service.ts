@@ -1,10 +1,95 @@
+import { MealWhereInput } from "../../../prisma/generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { omitUndefined } from "../../utils/object";
 import { CreateMealPayload, UpdateMealPayload } from "./meal.types";
 
 // GET | "/api/v1/meals" | Get all meals
-const getMeals = async () => {
-  return await prisma.meal.findMany();
+const getMeals = async (payload: {
+  search: string | undefined;
+  isFeatured: boolean | undefined;
+  isAvailable: boolean | undefined;
+  page: number;
+  limit: number;
+  skip: number;
+  sortBy: string;
+  sortOrder: string;
+}) => {
+  const {
+    search,
+    isFeatured,
+    isAvailable,
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder,
+  } = payload;
+  // Check if search value exists
+  const query: MealWhereInput[] = [];
+
+  if (search) {
+    query.push({
+      OR: [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+
+  // Check if isFeatured exists
+  if (typeof isFeatured === "boolean") {
+    query.push({ isFeatured });
+  }
+
+  // Check if isAvailable exists
+  if (typeof isAvailable === "boolean") {
+    query.push({ isAvailable });
+  }
+
+  const meals = await prisma.meal.findMany({
+    take: limit,
+    skip,
+    where: {
+      AND: query,
+    },
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  const count = await prisma.meal.count({
+    where: {
+      AND: query,
+    },
+  });
+
+  return {
+    metadata: {
+      count,
+      page,
+      limit,
+      totalPages: Math.ceil(count / limit),
+    },
+    meals,
+  };
 };
 
 // GET | "/api/v1/meals/:mealId" | Get meal by ID

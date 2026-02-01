@@ -3,17 +3,46 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { MealService } from "./meal.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { createMealSchema, updateMealSchema } from "./meal.schema";
+import paginationSortingHelper from "../../utils/paginationSortingHelper";
 
 // GET | "/api/v1/meals" | Get all meals
 const getMeals = asyncHandler(async (req: Request, res: Response) => {
-  const result = await MealService.getMeals();
+  const { search, isFeatured, isAvailable } = req.query;
+
+  const { page, limit, skip, sortBy, sortOrder } = paginationSortingHelper(
+    req.query,
+  );
+
+  const payload = {
+    search: typeof search === "string" ? search : undefined,
+    ...(isFeatured === "true"
+      ? { isFeatured: true }
+      : isFeatured === "false"
+        ? { isFeatured: false }
+        : { isFeatured: undefined }),
+    ...(isAvailable === "true"
+      ? { isAvailable: true }
+      : isAvailable === "false"
+        ? { isAvailable: false }
+        : { isAvailable: undefined }),
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder,
+  };
+
+  const result = await MealService.getMeals(payload);
 
   sendResponse(
     {
       statusCode: 200,
       success: true,
       message: "Meals retrieved successfully",
-      data: result,
+      data: {
+        meta: result.metadata,
+        data: result.meals,
+      },
     },
     res,
   );
