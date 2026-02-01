@@ -7,11 +7,16 @@ export const createMealSchema = z.object({
   description: z.string().optional(),
   price: z.number().positive(),
   image: z.url().optional(),
+  isAvailable: z.boolean(),
+  isFeatured: z.boolean(),
 });
 
 export const updateMealSchema = z.object({
-  name: z.string().optional(),
+  categoryId: z.uuid(),
+  name: z.string(),
   description: z.string().optional(),
-  price: z.number().positive().optional(),
+  price: z.number().positive(),
   image: z.url().optional(),
+  isFeatured: z.boolean(),
+  isAvailable: z.boolean(),
 });
