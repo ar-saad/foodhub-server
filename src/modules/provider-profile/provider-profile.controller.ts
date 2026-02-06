@@ -58,7 +58,11 @@ const getProviderProfile = asyncHandler(async (req: Request, res: Response) => {
 // GET "/api/v1/provider-profiles" | Get all provider profiles
 const getProviderProfiles = asyncHandler(
   async (req: Request, res: Response) => {
-    const result = await ProviderProfileService.getProviderProfiles();
+    const { search } = req.query;
+
+    const result = await ProviderProfileService.getProviderProfiles(
+      typeof search === "string" ? search : undefined,
+    );
     sendResponse(
       {
         statusCode: 200,

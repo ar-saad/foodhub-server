@@ -2,6 +2,7 @@ import {
   ProviderProfile,
   UserRoles,
 } from "../../../prisma/generated/prisma/browser";
+import { ProviderProfileWhereInput } from "../../../prisma/generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import {
   BadRequestError,
@@ -51,8 +52,21 @@ const getProviderProfile = async (providerId: string) => {
 };
 
 // GET "/api/v1/provider-profiles" | Get all provider profiles
-const getProviderProfiles = async () => {
-  return await prisma.providerProfile.findMany();
+const getProviderProfiles = async (search: string | undefined) => {
+  const query: ProviderProfileWhereInput[] = [];
+
+  if (search) {
+    query.push({
+      name: {
+        contains: search,
+        mode: "insensitive",
+      },
+    });
+  }
+
+  return await prisma.providerProfile.findMany({
+    where: { AND: query },
+  });
 };
 
 // PATCH | "/api/v1/provider-profiles/:providerId" | Update provider profile

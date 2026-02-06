@@ -5,6 +5,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { BadRequestError } from "../../utils/AppError";
 import { UserRoles, UserStatus } from "../../../prisma/generated/prisma/enums";
 import { omitUndefined } from "../../utils/object";
+import paginationSortingHelper from "../../utils/paginationSortingHelper";
 
 // GET | "/api/v1/users/me" | Get currently logged in user data
 const getCurrentlyLoggedInUser = asyncHandler(
@@ -31,13 +32,45 @@ const getCurrentlyLoggedInUser = asyncHandler(
 
 // GET | "/api/v1/users" | Get all users
 const getUsers = asyncHandler(async (req: Request, res: Response) => {
-  const result = await UserService.getUsers();
+  const { search } = req.query;
+
+  const { page, limit, skip, sortBy, sortOrder } = paginationSortingHelper(
+    req.query,
+  );
+
+  const payload = {
+    search: typeof search === "string" ? search : undefined,
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder,
+  };
+
+  const result = await UserService.getUsers(payload);
 
   sendResponse(
     {
       statusCode: 200,
       success: true,
       message: "Retrieved all users data",
+      data: result,
+    },
+    res,
+  );
+});
+
+// GET | "/api/v1/users/:userId" | Get user by ID
+const getUser = asyncHandler(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  const result = await UserService.getUser(userId as string);
+
+  sendResponse(
+    {
+      statusCode: 200,
+      success: true,
+      message: "Retrieved user data",
       data: result,
     },
     res,
@@ -105,6 +138,7 @@ const updateUserStatus = asyncHandler(async (req: Request, res: Response) => {
 
 export const UserController = {
   getUsers,
+  getUser,
   getCurrentlyLoggedInUser,
   updateUser,
   updateUserStatus,

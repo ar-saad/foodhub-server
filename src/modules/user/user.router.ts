@@ -16,6 +16,9 @@ router.get(
 // GET | "/api/v1/users/me" | Get currently logged in user data
 router.get("/me", authenticate, UserController.getCurrentlyLoggedInUser);
 
+// GET | "/api/v1/users/:userId" | Get user by ID
+router.get("/:userId", authenticate, UserController.getUser);
+
 // PATCH | "/api/v1/users/:userId" | Update user
 router.patch("/:userId", authenticate, UserController.updateUser);
 
