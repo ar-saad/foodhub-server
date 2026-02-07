@@ -7,6 +7,7 @@ import { CreateMealPayload, UpdateMealPayload } from "./meal.types";
 const getMeals = async (payload: {
   search: string | undefined;
   categoryId: string | undefined;
+  providerId: string | undefined;
   isFeatured: boolean | undefined;
   isAvailable: boolean | undefined;
   page: number;
@@ -18,6 +19,7 @@ const getMeals = async (payload: {
   const {
     search,
     categoryId,
+    providerId,
     isFeatured,
     isAvailable,
     page,
@@ -51,6 +53,11 @@ const getMeals = async (payload: {
   // Check if categoryId exists
   if (categoryId) {
     query.push({ categoryId });
+  }
+
+  // Check if providerId exists
+  if (providerId) {
+    query.push({ providerId });
   }
 
   // Check if isFeatured exists

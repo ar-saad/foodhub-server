@@ -7,7 +7,7 @@ import paginationSortingHelper from "../../utils/paginationSortingHelper";
 
 // GET | "/api/v1/meals" | Get all meals
 const getMeals = asyncHandler(async (req: Request, res: Response) => {
-  const { search, categoryId, isFeatured, isAvailable } = req.query;
+  const { search, categoryId, providerId, isFeatured, isAvailable } = req.query;
 
   const { page, limit, skip, sortBy, sortOrder } = paginationSortingHelper(
     req.query,
@@ -16,6 +16,7 @@ const getMeals = asyncHandler(async (req: Request, res: Response) => {
   const payload = {
     search: typeof search === "string" ? search : undefined,
     categoryId: typeof categoryId === "string" ? categoryId : undefined,
+    providerId: typeof providerId === "string" ? providerId : undefined,
     ...(isFeatured === "true"
       ? { isFeatured: true }
       : isFeatured === "false"
