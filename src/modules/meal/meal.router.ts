@@ -28,6 +28,11 @@ router.patch(
 );
 
 // DELETE | "/api/v1/meals/:mealId" | Delete meal
-router.delete("/:mealId", MealController.deleteMeal);
+router.delete(
+  "/:mealId",
+  authenticate,
+  authorize(UserRoles.PROVIDER),
+  MealController.deleteMeal,
+);
 
 export const MealRouter = router;

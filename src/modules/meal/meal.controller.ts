@@ -93,7 +93,11 @@ const updateMeal = asyncHandler(async (req: Request, res: Response) => {
 
   const payload = updateMealSchema.parse(data);
 
-  const result = await MealService.updateMeal(mealId as string, payload);
+  const result = await MealService.updateMeal(
+    mealId as string,
+    req.user!.id,
+    payload,
+  );
 
   sendResponse(
     {
@@ -110,7 +114,7 @@ const updateMeal = asyncHandler(async (req: Request, res: Response) => {
 const deleteMeal = asyncHandler(async (req: Request, res: Response) => {
   const { mealId } = req.params;
 
-  const result = await MealService.deleteMeal(mealId as string);
+  const result = await MealService.deleteMeal(mealId as string, req.user!.id);
 
   sendResponse(
     {

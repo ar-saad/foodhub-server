@@ -1,5 +1,6 @@
 import { MealWhereInput } from "../../../prisma/generated/prisma/models";
 import { prisma } from "../../lib/prisma";
+import { ForbiddenError, NotFoundError } from "../../utils/AppError";
 import { omitUndefined } from "../../utils/object";
 import { CreateMealPayload, UpdateMealPayload } from "./meal.types";
 
@@ -126,24 +127,46 @@ const createMeal = async (payload: CreateMealPayload) => {
   });
 };
 
+// Verify the authenticated user owns the meal via providerProfile
+const verifyMealOwnership = async (mealId: string, userId: string) => {
+  const meal = await prisma.meal.findUnique({
+    where: { id: mealId },
+    include: { providerProfile: { select: { userId: true } } },
+  });
+
+  if (!meal) {
+    throw new NotFoundError("Meal not found");
+  }
+
+  if (meal.providerProfile.userId !== userId) {
+    throw new ForbiddenError("You are not authorized to modify this meal");
+  }
+
+  return meal;
+};
+
 // PATCH | "/api/v1/meals/mealId" | Update meal
-const updateMeal = async (mealId: string, payload: UpdateMealPayload) => {
+const updateMeal = async (
+  mealId: string,
+  userId: string,
+  payload: UpdateMealPayload,
+) => {
+  await verifyMealOwnership(mealId, userId);
+
   const data = omitUndefined(payload);
 
   return await prisma.meal.update({
-    where: {
-      id: mealId,
-    },
+    where: { id: mealId },
     data,
   });
 };
 
 // DELETE | "/api/v1/meals/:mealId" | Delete meal
-const deleteMeal = async (mealId: string) => {
+const deleteMeal = async (mealId: string, userId: string) => {
+  await verifyMealOwnership(mealId, userId);
+
   return await prisma.meal.delete({
-    where: {
-      id: mealId,
-    },
+    where: { id: mealId },
   });
 };
 
