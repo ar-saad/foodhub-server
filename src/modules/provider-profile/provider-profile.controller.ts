@@ -88,14 +88,13 @@ const updateProviderProfile = asyncHandler(
       );
     }
 
-    data.userId = user?.id;
-
     const payload = updateProviderProfileSchema.parse(data);
 
-    const result = await ProviderProfileService.updateProviderProfile(
+    const result = await ProviderProfileService.updateProviderProfile({
       providerId,
+      userId: user?.id as string,
       payload,
-    );
+    });
 
     sendResponse(
       {

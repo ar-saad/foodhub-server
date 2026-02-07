@@ -70,10 +70,15 @@ const getProviderProfiles = async (search: string | undefined) => {
 };
 
 // PATCH | "/api/v1/provider-profiles/:providerId" | Update provider profile
-const updateProviderProfile = async (
-  providerId: string,
-  payload: ProviderProfileUpdatePayload,
-) => {
+const updateProviderProfile = async ({
+  providerId,
+  userId,
+  payload,
+}: {
+  providerId: string;
+  userId: string;
+  payload: ProviderProfileUpdatePayload;
+}) => {
   // Check if Profile ID exists
   if (!providerId) {
     throw new BadRequestError("Profile Id not provided");
@@ -91,7 +96,7 @@ const updateProviderProfile = async (
   }
 
   // Check if the user trying to update the profile is the owner of the profile or not
-  if (profileToUpdate.userId !== payload.userId) {
+  if (profileToUpdate.userId !== userId) {
     throw new ForbiddenError(
       "You do not have permission to update this provider profile",
     );

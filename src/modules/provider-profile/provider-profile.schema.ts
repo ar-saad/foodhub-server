@@ -9,7 +9,6 @@ export const createProviderProfileSchema = z.object({
 });
 
 export const updateProviderProfileSchema = z.object({
-  userId: z.string().min(1),
   name: z.string().optional(),
   address: z.string().optional(),
   description: z.string().optional(),
