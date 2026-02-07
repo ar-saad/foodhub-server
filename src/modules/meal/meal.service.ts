@@ -87,6 +87,12 @@ const getMeals = async (payload: {
           name: true,
         },
       },
+      providerProfile: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 

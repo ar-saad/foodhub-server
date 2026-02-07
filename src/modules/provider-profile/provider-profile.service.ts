@@ -46,7 +46,16 @@ const getProviderProfile = async (providerId: string) => {
       id: providerId,
     },
     include: {
-      meals: true,
+      meals: {
+        include: {
+          providerProfile: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 };
@@ -66,6 +75,13 @@ const getProviderProfiles = async (search: string | undefined) => {
 
   return await prisma.providerProfile.findMany({
     where: { AND: query },
+    include: {
+      meals: {
+        where: {
+          isFeatured: true,
+        },
+      },
+    },
   });
 };
 

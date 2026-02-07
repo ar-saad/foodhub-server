@@ -11,7 +11,7 @@ const getOrders = asyncHandler(async (req: Request, res: Response) => {
 
   sendResponse(
     {
-      statusCode: 201,
+      statusCode: 200,
       success: true,
       message: "Orders retrieved successfully",
       data: result,

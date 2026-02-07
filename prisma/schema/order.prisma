@@ -3,7 +3,6 @@ model Order {
   customerId String
   providerId String
 
-  items       Json
   totalAmount Decimal     @db.Decimal(10, 2)
   address     String
   paymentType PaymentType @default(COD)
@@ -12,6 +11,10 @@ model Order {
   customer        User            @relation(fields: [customerId], references: [id])
   providerProfile ProviderProfile @relation(fields: [providerId], references: [id])
   reviews         Review[]
+  orderItems      OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("order")
 }

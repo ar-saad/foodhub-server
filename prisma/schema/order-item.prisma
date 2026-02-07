@@ -1,0 +1,12 @@
+model OrderItem {
+  id       String  @id @default(uuid())
+  orderId  String
+  mealId   String
+  quantity Int
+  price    Decimal @db.Decimal(10, 2) // snapshot of price at order time
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  meal  Meal  @relation(fields: [mealId], references: [id])
+
+  @@map("order_item")
+}

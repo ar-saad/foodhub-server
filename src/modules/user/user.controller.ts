@@ -87,6 +87,7 @@ const updateUser = asyncHandler(async (req: Request, res: Response) => {
     name: data.name,
     image: data.image,
     phone: data.phone,
+    address: data.address,
   });
 
   if (!user) {

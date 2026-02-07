@@ -7,9 +7,10 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role   UserRoles  @default(CUSTOMER)
-  phone  String?
-  status UserStatus @default(ACTIVE)
+  role    UserRoles  @default(CUSTOMER)
+  phone   String?
+  address String?
+  status  UserStatus @default(ACTIVE)
 
   orders          Order[]
   reviews         Review[]
