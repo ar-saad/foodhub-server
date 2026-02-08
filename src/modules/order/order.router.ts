@@ -8,6 +8,9 @@ const router: Router = Router();
 // GET | "/api/v1/orders" | Get all orders
 router.get("/", authenticate, OrderController.getOrders);
 
+// GET | "/api/v1/orders/:orderId" | Get order by ID
+router.get("/:orderId", authenticate, OrderController.getOrder);
+
 // POST | "/api/v1/orders" | Create order
 router.post(
   "/",
@@ -20,7 +23,7 @@ router.post(
 router.patch(
   "/:orderId",
   authenticate,
-  authorize(UserRoles.PROVIDER),
+  authorize(UserRoles.CUSTOMER, UserRoles.PROVIDER),
   OrderController.updateOrder,
 );
 
