@@ -93,6 +93,7 @@ const getMeals = async (payload: {
           name: true,
         },
       },
+      reviews: true,
     },
   });
 
@@ -118,6 +119,21 @@ const getMeal = async (mealId: string) => {
   return await prisma.meal.findUnique({
     where: {
       id: mealId,
+    },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      providerProfile: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      reviews: true,
     },
   });
 };

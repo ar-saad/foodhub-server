@@ -126,6 +126,7 @@ const getOrder = async (orderId: string) => {
           logo: true,
         },
       },
+      reviews: true,
     },
   });
 };

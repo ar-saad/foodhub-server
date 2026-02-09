@@ -10,6 +10,7 @@ import { UserRouter } from "./modules/user/user.router";
 import { MealRouter } from "./modules/meal/meal.router";
 import { CategoryRouter } from "./modules/category/category.router";
 import { OrderRouter } from "./modules/order/order.router";
+import { ReviewRouter } from "./modules/review/review.router";
 
 const app: Application = express();
 
@@ -33,6 +34,7 @@ app.use("/api/v1/provider-profiles", ProviderProfileRouter);
 app.use("/api/v1/categories", CategoryRouter);
 app.use("/api/v1/meals", MealRouter);
 app.use("/api/v1/orders", OrderRouter);
+app.use("/api/v1/reviews", ReviewRouter);
 
 // ROOT DIRECTORY
 app.get("/", (req: Request, res: Response) => {
