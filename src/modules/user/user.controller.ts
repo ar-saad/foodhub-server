@@ -54,7 +54,10 @@ const getUsers = asyncHandler(async (req: Request, res: Response) => {
       statusCode: 200,
       success: true,
       message: "Retrieved all users data",
-      data: result,
+      data: {
+        meta: result.metaData,
+        data: result.users,
+      },
     },
     res,
   );

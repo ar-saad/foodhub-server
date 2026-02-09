@@ -73,13 +73,13 @@ const getUsers = async ({
     },
   });
   return {
-    meta: {
+    metaData: {
       count,
       page,
       limit,
       totalPages: Math.ceil(count / limit),
     },
-    result: users,
+    users,
   };
 };
 

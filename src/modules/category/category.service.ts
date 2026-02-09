@@ -1,9 +1,55 @@
+import { CategoryWhereInput } from "../../../prisma/generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { CategoryCreatePayload } from "./category.types";
 
 // GET | "/api/v1/categories" | Get all categories
-const getCategories = async () => {
-  return await prisma.category.findMany();
+const getCategories = async (payload: {
+  search: string | undefined;
+  page: number;
+  limit: number;
+  skip: number;
+  sortBy: string;
+  sortOrder: string;
+}) => {
+  const { search, page, limit, skip, sortBy, sortOrder } = payload;
+
+  const query: CategoryWhereInput[] = [];
+
+  if (search) {
+    query.push({
+      OR: [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+
+  const categories = await prisma.category.findMany({
+    take: limit,
+    skip,
+    where: {
+      AND: query,
+    },
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
+  });
+
+  const count = await prisma.category.count();
+
+  return {
+    metadata: {
+      count,
+      page,
+      limit,
+      totalPages: Math.ceil(count / limit),
+    },
+    categories,
+  };
 };
 
 // GET | "/api/v1/categories/:categoryId" | Get category by ID

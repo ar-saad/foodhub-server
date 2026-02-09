@@ -3,17 +3,34 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { CategoryService } from "./category.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { createCategorySchema } from "./category.schema";
+import paginationSortingHelper from "../../utils/paginationSortingHelper";
 
 // GET | "/api/v1/categories" | Get all categories
 const getCategories = asyncHandler(async (req: Request, res: Response) => {
-  const result = await CategoryService.getCategories();
+  const { search } = req.query;
+
+  const { page, limit, skip, sortBy, sortOrder } = paginationSortingHelper(
+    req.query,
+  );
+
+  const result = await CategoryService.getCategories({
+    search: typeof search === "string" ? search : undefined,
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder,
+  });
 
   sendResponse(
     {
       statusCode: 200,
       success: true,
-      message: "Categories retrieved created",
-      data: result,
+      message: "Categories retrieved successfully",
+      data: {
+        meta: result.metadata,
+        data: result.categories,
+      },
     },
     res,
   );
