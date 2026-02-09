@@ -8,8 +8,8 @@
     "dev": "npx tsx watch src/server.ts",
     "seed:admin": "npx tsx src/scripts/seedAdmin.ts",
     "build": "prisma generate",
-    "start": "node server.js",
-    "deploy": "prisma migrate deploy && node server.js"
+    "start": "node src/server.ts",
+    "deploy": "prisma migrate deploy && node src/server.ts"
   },
   "keywords": [],
   "author": "",
