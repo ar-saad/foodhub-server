@@ -8,7 +8,7 @@
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
     "build": "prisma generate && tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
     "start": "node dist/src/server.js",
-    "deploy": "prisma migrate deploy && npm run build && npm run start"
+    "deploy": "prisma migrate deploy && npm run build && node dist/src/scripts/seedAdmin.js && npm run start"
   },
   "keywords": [],
   "author": "",
