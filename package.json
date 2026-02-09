@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
-    "build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths && prisma generate",
+    "build": "prisma generate && tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
     "start": "node dist/src/server.js",
     "deploy": "prisma migrate deploy && npm run build && npm run start"
   },
