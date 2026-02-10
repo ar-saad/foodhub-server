@@ -1,10 +1,18 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { UserRoles, UserStatus } from "../../prisma/generated/prisma/enums";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_EMAIL,
+    pass: process.env.SMTP_APP_PASSWORD,
+  },
+});
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -42,13 +50,28 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, token }) => {
-      const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
+      try {
+        const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
 
-      resend.emails
-        .send({
-          from: "FoodHub <onboarding@resend.dev>", // Use Resend's test domain
+        const info = await transporter.sendMail({
+          from: '"FoodHub" <arsaad.dev@gmail.com>',
           to: user.email,
           subject: "Verify your email address",
+          text: `
+Hi ${user.name ?? "there"},
+
+Thanks for signing up for FoodHub.
+
+Please verify your email address by visiting the link below:
+${verificationUrl}
+
+This link may expire soon.
+
+If you did not create an account, you can safely ignore this email.
+
+Regards,
+FoodHub Team
+`.trim(),
           html: `
 <!DOCTYPE html>
 <html>
@@ -58,6 +81,7 @@ export const auth = betterAuth({
         <td align="center" style="padding:40px 16px;">
           <table width="100%" style="max-width:600px; background-color:#ffffff; border-radius:8px; overflow:hidden;">
             
+            <!-- Header -->
             <tr>
               <td style="background-color:#111827; padding:20px; text-align:center;">
                 <span style="color:#ffffff; font-size:22px; font-weight:600;">
@@ -66,6 +90,7 @@ export const auth = betterAuth({
               </td>
             </tr>
 
+            <!-- Body -->
             <tr>
               <td style="padding:32px; color:#374151; font-size:14px; line-height:1.6;">
                 <p style="margin:0 0 16px;">
@@ -78,7 +103,7 @@ export const auth = betterAuth({
                 </p>
 
                 <div style="text-align:center; margin:32px 0;">
-                  
+                  <a
                     href="${verificationUrl}"
                     style="
                       display:inline-block;
@@ -116,6 +141,7 @@ export const auth = betterAuth({
               </td>
             </tr>
 
+            <!-- Footer -->
             <tr>
               <td style="background-color:#f9fafb; padding:16px; text-align:center; font-size:12px; color:#9ca3af;">
                 © ${new Date().getFullYear()} FoodHub. All rights reserved.
@@ -129,9 +155,13 @@ export const auth = betterAuth({
   </body>
 </html>
 `,
-        })
-        .then(() => console.log("✅ Verification email sent to", user.email))
-        .catch((err) => console.error("❌ Failed to send email:", err));
+        });
+
+        console.log("Verification email sent:", info.messageId);
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     },
   },
   socialProviders: {
