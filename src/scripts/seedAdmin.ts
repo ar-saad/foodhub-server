@@ -1,20 +1,41 @@
-import { scrypt, randomBytes } from "crypto";
-import { promisify } from "util";
+import { scryptAsync } from "@noble/hashes/scrypt.js";
+import { randomBytes } from "crypto";
 import { UserRoles } from "../../prisma/generated/prisma/enums.js";
 import { prisma } from "../lib/prisma.js";
 
-const scryptAsync = promisify(scrypt);
+// Better Auth's scrypt configuration
+const config = {
+  N: 16384,
+  r: 16,
+  p: 1,
+  dkLen: 64,
+};
 
-// Generate a random ID (similar to what Better Auth does)
+// Generate a random ID
 function generateId(): string {
   return randomBytes(16).toString("hex");
 }
 
-// Hash password using scrypt (same as Better Auth default)
+// Hash password using the EXACT same method as Better Auth
 async function hashPassword(password: string): Promise<string> {
-  const salt = randomBytes(16).toString("hex");
-  const derivedKey = (await scryptAsync(password, salt, 64)) as Buffer;
-  return `${salt}:${derivedKey.toString("hex")}`;
+  const saltBytes = randomBytes(16);
+  const salt = Array.from(saltBytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  const key = await scryptAsync(password.normalize("NFKC"), salt, {
+    N: config.N,
+    p: config.p,
+    r: config.r,
+    dkLen: config.dkLen,
+    maxmem: 128 * config.N * config.r * 2,
+  });
+
+  const keyHex = Array.from(key)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  return `${salt}:${keyHex}`;
 }
 
 const seedAdmin = async () => {
@@ -47,7 +68,6 @@ const seedAdmin = async () => {
 
     // Create admin user and account in a transaction
     await prisma.$transaction(async (tx) => {
-      // Create the user
       await tx.user.create({
         data: {
           id: userId,
@@ -58,7 +78,6 @@ const seedAdmin = async () => {
         },
       });
 
-      // Create the account with password
       await tx.account.create({
         data: {
           id: accountId,
