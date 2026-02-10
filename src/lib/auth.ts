@@ -1,18 +1,10 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { UserRoles, UserStatus } from "../../prisma/generated/prisma/enums";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_APP_PASSWORD,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -50,29 +42,13 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, token }) => {
-      // Send email without awaiting - fire and forget
       const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
 
-      transporter
-        .sendMail({
-          from: '"FoodHub" <arsaad.dev@gmail.com>',
+      resend.emails
+        .send({
+          from: "FoodHub <onboarding@resend.dev>", // Use Resend's test domain
           to: user.email,
           subject: "Verify your email address",
-          text: `
-Hi ${user.name ?? "there"},
-
-Thanks for signing up for FoodHub.
-
-Please verify your email address by visiting the link below:
-${verificationUrl}
-
-This link may expire soon.
-
-If you did not create an account, you can safely ignore this email.
-
-Regards,
-FoodHub Team
-`.trim(),
           html: `
 <!DOCTYPE html>
 <html>
@@ -82,7 +58,6 @@ FoodHub Team
         <td align="center" style="padding:40px 16px;">
           <table width="100%" style="max-width:600px; background-color:#ffffff; border-radius:8px; overflow:hidden;">
             
-            <!-- Header -->
             <tr>
               <td style="background-color:#111827; padding:20px; text-align:center;">
                 <span style="color:#ffffff; font-size:22px; font-weight:600;">
@@ -91,7 +66,6 @@ FoodHub Team
               </td>
             </tr>
 
-            <!-- Body -->
             <tr>
               <td style="padding:32px; color:#374151; font-size:14px; line-height:1.6;">
                 <p style="margin:0 0 16px;">
@@ -142,7 +116,6 @@ FoodHub Team
               </td>
             </tr>
 
-            <!-- Footer -->
             <tr>
               <td style="background-color:#f9fafb; padding:16px; text-align:center; font-size:12px; color:#9ca3af;">
                 © ${new Date().getFullYear()} FoodHub. All rights reserved.
@@ -157,15 +130,8 @@ FoodHub Team
 </html>
 `,
         })
-        .then((info) => {
-          console.log("Verification email sent:", info.messageId);
-        })
-        .catch((error) => {
-          console.error("Failed to send verification email:", error);
-          // Consider logging to a monitoring service here
-        });
-
-      // Return immediately without waiting for email to send
+        .then(() => console.log("✅ Verification email sent to", user.email))
+        .catch((err) => console.error("❌ Failed to send email:", err));
     },
   },
   socialProviders: {
