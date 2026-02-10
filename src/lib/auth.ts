@@ -50,10 +50,11 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, token }) => {
-      try {
-        const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
+      // Send email without awaiting - fire and forget
+      const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
 
-        const info = await transporter.sendMail({
+      transporter
+        .sendMail({
           from: '"FoodHub" <arsaad.dev@gmail.com>',
           to: user.email,
           subject: "Verify your email address",
@@ -103,7 +104,7 @@ FoodHub Team
                 </p>
 
                 <div style="text-align:center; margin:32px 0;">
-                  <a
+                  
                     href="${verificationUrl}"
                     style="
                       display:inline-block;
@@ -155,13 +156,16 @@ FoodHub Team
   </body>
 </html>
 `,
+        })
+        .then((info) => {
+          console.log("Verification email sent:", info.messageId);
+        })
+        .catch((error) => {
+          console.error("Failed to send verification email:", error);
+          // Consider logging to a monitoring service here
         });
 
-        console.log("Verification email sent:", info.messageId);
-      } catch (error) {
-        console.error(error);
-        throw error;
-      }
+      // Return immediately without waiting for email to send
     },
   },
   socialProviders: {
