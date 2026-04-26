@@ -8,7 +8,8 @@
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
     "build": "prisma generate && tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
     "start": "node dist/src/server.js",
-    "deploy": "prisma migrate deploy && npm run build && node dist/src/scripts/seedAdmin.js && npm run start"
+    "deploy": "prisma migrate deploy && npm run build && node dist/src/scripts/seedAdmin.js && npm run start",
+    "stripe:webhook": "stripe listen --forward-to localhost:5000/api/v1/payment/webhook"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.1.0",
     "@types/nodemailer": "^7.0.9",
+    "@types/pdfkit": "^0.17.6",
     "@types/pg": "^8.16.0",
     "dotenv": "^17.2.3",
     "prisma": "^7.3.0",
@@ -31,11 +33,14 @@
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "better-auth": "^1.4.17",
+    "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "nodemailer": "^7.0.13",
+    "pdfkit": "^0.18.0",
     "pg": "^8.17.2",
     "resend": "^6.9.1",
+    "stripe": "^22.1.0",
     "zod": "^4.3.6"
   }
 }

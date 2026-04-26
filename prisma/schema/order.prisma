@@ -5,13 +5,15 @@ model Order {
 
   totalAmount Decimal     @db.Decimal(10, 2)
   address     String
-  paymentType PaymentType @default(COD)
-  status      OrderStatus @default(PLACED)
+  paymentType   PaymentType   @default(COD)
+  paymentStatus PaymentStatus @default(UNPAID)
+  status        OrderStatus   @default(PLACED)
 
   customer        User            @relation(fields: [customerId], references: [id])
   providerProfile ProviderProfile @relation(fields: [providerId], references: [id])
   reviews         Review[]
   orderItems      OrderItem[]
+  payment         Payment?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -30,4 +32,5 @@ enum OrderStatus {
 
 enum PaymentType {
   COD
+  ONLINE
 }

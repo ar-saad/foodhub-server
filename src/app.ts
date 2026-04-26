@@ -11,6 +11,7 @@ import { MealRouter } from "./modules/meal/meal.router";
 import { CategoryRouter } from "./modules/category/category.router";
 import { OrderRouter } from "./modules/order/order.router";
 import { ReviewRouter } from "./modules/review/review.router";
+import { PaymentRouter } from "./modules/payment/payment.router";
 
 const app: Application = express();
 
@@ -21,6 +22,9 @@ app.use(
     credentials: true,
   }),
 );
+
+// Webhook route must be registered before express.json()
+app.use("/api/v1/payment", PaymentRouter);
 
 // Parser
 app.use(express.json());

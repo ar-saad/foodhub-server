@@ -1,0 +1,25 @@
+model Payment {
+  id                 String        @id @default(uuid())
+  amount             Decimal       @db.Decimal(10, 2)
+  transactionId      String        @unique
+  stripeEventId      String?       @unique
+  status             PaymentStatus @default(UNPAID)
+  checkoutUrl        String?
+  invoiceUrl         String?
+  paymentGatewayData Json?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([transactionId])
+  @@map("payment")
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+}
