@@ -12,6 +12,7 @@ import { CategoryRouter } from "./modules/category/category.router";
 import { OrderRouter } from "./modules/order/order.router";
 import { ReviewRouter } from "./modules/review/review.router";
 import { PaymentRouter } from "./modules/payment/payment.router";
+import { StatsRouter } from "./modules/stats/stats.router";
 
 const app: Application = express();
 
@@ -39,6 +40,7 @@ app.use("/api/v1/categories", CategoryRouter);
 app.use("/api/v1/meals", MealRouter);
 app.use("/api/v1/orders", OrderRouter);
 app.use("/api/v1/reviews", ReviewRouter);
+app.use("/api/v1/stats", StatsRouter);
 
 // ROOT DIRECTORY
 app.get("/", (req: Request, res: Response) => {
