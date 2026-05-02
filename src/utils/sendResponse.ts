@@ -1,17 +1,17 @@
 import { Response } from "express";
 
-export const sendResponse = (
+export const sendResponse = <T>(
   resData: {
     statusCode: number;
     success: boolean;
     message: string;
-    data: any;
+    data?: T;
   },
   res: Response
 ) => {
   return res.status(resData?.statusCode).json({
-    success: true,
+    success: resData.success,
     message: resData?.message || "Request successful",
-    data: resData.data,
+    data: resData.data || null,
   });
 };

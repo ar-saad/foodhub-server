@@ -38,8 +38,19 @@ const getAdminStats = asyncHandler(async (_req: Request, res: Response) => {
 const getProviderStats = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
+  if (!userId) {
+    return sendResponse(
+      {
+        statusCode: 401,
+        success: false,
+        message: "Unauthorized access",
+      },
+      res,
+    );
+  }
+
   const providerProfile = await prisma.providerProfile.findUnique({
-    where: { userId },
+    where: { userId: userId as string },
   });
 
   if (!providerProfile) {
